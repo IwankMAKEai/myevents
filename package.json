@@ -1,0 +1,27 @@
+{
+  "name": "kitten-events-pixelbattle",
+  "version": "1.0.0",
+  "description": "Pixel Battle with events management",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "public": "node start-public.js"
+  },
+  "keywords": [
+    "pixel",
+    "battle",
+    "events"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "expose": "^0.1.4",
+    "express": "^4.18.2",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
