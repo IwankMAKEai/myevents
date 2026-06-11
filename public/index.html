@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitten Events - Pixel Battle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1000px;
+            width: 100%;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .event-info {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .event-info h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 8px;
+        }
+
+        .event-info p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 250px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .canvas-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .canvas-label {
+            color: #666;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        canvas {
+            border: 3px solid #667eea;
+            border-radius: 8px;
+            background: white;
+            cursor: crosshair;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .color-picker {
+            width: 100%;
+        }
+
+        .color-picker label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .color-picker input[type="color"] {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .username-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .username-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stats h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.85em;
+            margin: 5px 0;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .preset-colors {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .preset-btn {
+            padding: 10px 5px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.7em;
+        }
+
+        .preset-btn:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            canvas {
+                max-width: 100%;
+            }
+        }
+
+        .info-text {
+            color: #999;
+            font-size: 0.8em;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Pixel Battle</h1>
+            <div class="event-info">
+                <h2 id="eventName">Классический Пиксель Батл</h2>
+                <p id="eventDescription">Рисуй пиксели на общей доске!</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="canvas-section">
+                <div class="canvas-label">Холст (512x512px) - 64x64 пикселя</div>
+                <canvas id="canvas" width="512" height="512"></canvas>
+                <div class="info-text">Кликните чтобы рисовать | Выберите цвет слева</div>
+            </div>
+
+            <div class="sidebar">
+                <div class="status connected" id="status">🟢 Подключено</div>
+
+                <div class="color-picker">
+                    <label for="colorPicker">Цвет</label>
+                    <input type="color" id="colorPicker" value="#FF0000">
+                </div>
+
+                <div>
+                    <label for="username">Ник</label>
+                    <input type="text" id="username" class="username-input" placeholder="Ваше имя" value="Player">
+                </div>
+
+                <div class="preset-colors">
+                    <button class="preset-btn" style="background: #FF0000;" onclick="setColor('#FF0000')">🔴 Red</button>
+                    <button class="preset-btn" style="background: #00FF00;" onclick="setColor('#00FF00')">🟢 Green</button>
+                    <button class="preset-btn" style="background: #0000FF;" onclick="setColor('#0000FF')">🔵 Blue</button>
+                    <button class="preset-btn" style="background: #FFFF00;" onclick="setColor('#FFFF00')">🟡 Yellow</button>
+                    <button class="preset-btn" style="background: #FFA500;" onclick="setColor('#FFA500')">🟠 Orange</button>
+                    <button class="preset-btn" style="background: #FFFFFF; border: 2px solid #ccc;" onclick="setColor('#FFFFFF')">⚪ White</button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="downloadCanvas()">📥 Сохранить</button>
+                    <button class="btn-danger" onclick="clearCanvas()">🗑️ Очистить</button>
+                </div>
+
+                <div class="stats">
+                    <h3>📊 Статистика</h3>
+                    <div class="stat-item">
+                        <span>Заполнено пикселей:</span>
+                        <span id="filledPixels">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Всего пикселей:</span>
+                        <span id="totalPixels">4096</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Пользователей:</span>
+                        <span id="connectedUsers">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const colorPicker = document.getElementById('colorPicker');
+        const usernameInput = document.getElementById('username');
+        const statusEl = document.getElementById('status');
+
+        const PIXEL_SIZE = 8; // 512px canvas / 64 pixels = 8px per pixel
+        let ws;
+
+        function getWebSocketURL() {
+            const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            return `${protocol}://${window.location.host}`;
+        }
+
+        function connectWebSocket() {
+            ws = new WebSocket(getWebSocketURL());
+
+            ws.onopen = () => {
+                console.log('Connected to server');
+                updateStatus(true);
+            };
+
+            ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+
+                if (message.type === 'canvas') {
+                    renderCanvas(message.data);
+                    if (message.event) {
+                        updateEventInfo(message.event);
+                    }
+                } else if (message.type === 'pixel') {
+                    drawPixel(message.x, message.y, message.color);
+                    updateStats();
+                } else if (message.type === 'event') {
+                    updateEventInfo(message.data);
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                updateStatus(false);
+            };
+
+            ws.onclose = () => {
+                console.log('Disconnected from server');
+                updateStatus(false);
+                setTimeout(connectWebSocket, 3000);
+            };
+        }
+
+        function updateStatus(connected) {
+            if (connected) {
+                statusEl.textContent = '🟢 Подключено';
+                statusEl.className = 'status connected';
+            } else {
+                statusEl.textContent = '🔴 Отключено';
+                statusEl.className = 'status disconnected';
+            }
+        }
+
+        function updateEventInfo(event) {
+            document.getElementById('eventName').textContent = event.name;
+            document.getElementById('eventDescription').textContent = event.description;
+        }
+
+        function drawPixel(x, y, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x * PIXEL_SIZE, y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
+        }
+
+        function renderCanvas(canvasData) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvasData.forEach((row, y) => {
+                row.forEach((color, x) => {
+                    drawPixel(x, y, color);
+                });
+            });
+        }
+
+        function setColor(color) {
+            colorPicker.value = color;
+        }
+
+        function updateStats() {
+            fetch('/api/stats')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('filledPixels').textContent = data.filledPixels;
+                    document.getElementById('totalPixels').textContent = data.totalPixels;
+                    document.getElementById('connectedUsers').textContent = data.connectedUsers;
+                });
+        }
+
+        function downloadCanvas() {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL();
+            link.download = `pixel-battle-${new Date().getTime()}.png`;
+            link.click();
+        }
+
+        function clearCanvas() {
+            if (confirm('Очистить весь холст?')) {
+                fetch('/api/canvas/clear', { method: 'POST' });
+            }
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) / PIXEL_SIZE);
+            const y = Math.floor((e.clientY - rect.top) / PIXEL_SIZE);
+
+            if (x >= 0 && x < 64 && y >= 0 && y < 64) {
+                const color = colorPicker.value;
+                drawPixel(x, y, color);
+
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'pixel',
+                        x,
+                        y,
+                        color,
+                        username: usernameInput.value
+                    }));
+                }
+
+                updateStats();
+            }
+        });
+
+        // Initialize
+        connectWebSocket();
+        updateStats();
+
+        // Update stats every 5 seconds
+        setInterval(updateStats, 5000);
+    </script>
+</body>
+</html>
